@@ -1,0 +1,25 @@
+{
+	"schemaVersion": 1,
+	"id": "spoticraft",
+	"version": "${version}",
+	"name": "SpotiCraft",
+	"description": "Spotify control and browsing inside Minecraft with playlists, search, and a movable HUD.",
+	"authors": [
+		"LeonimusT"
+	],
+	"license": "All Rights Reserved",
+	"icon": "assets/spoticraft/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": ["com.leonimust.SpotiCraft"]
+	},
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.10",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
