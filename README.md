@@ -1,226 +1,110 @@
-# This project will no longer be maintained
+# SpotiCraft
 
-Due to Spotify’s recent investment and price changes, I decided to completely stop the development of this mod.
+SpotiCraft is a Fabric `1.21.10` mod that lets you control Spotify from inside Minecraft.
 
-# NEW USER PLEASE READ
-If you're planning to use the mod, and you didn't use it before, you may not be able to do so, if the Spotify app hits the 30 daily user limit, the mod may crash when trying to load data from your account, for news about this you can go [see this issue on GitHub](https://github.com/LeonimusTTV/SpotiCraft/issues/2) \
-\
-A workaround for this is to make your own Spotify app and build the mod yourself, you'll need to update it every new release and build it again, see the [How to build the mod](#how-to-build-the-mod)
-# SpotiCraft - A new way of listening to music
+It supports:
+- Spotify login with your own Spotify developer app
+- Play, pause, next, previous, shuffle, repeat, volume
+- Search for tracks, artists, albums, and playlists
+- Artist pages, album pages, playlists, liked songs
+- Add and remove the current track from your editable playlists
+- An always-on dark HUD strip with cover art, title, artist, progress, and duration
+- A movable HUD editor
 
-These are the **official** links to download the mod on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/spoticraft-2) and [Modrinth](https://modrinth.com/mod/spoticraft-2) \
-Another mod also called SpotiCraft exist, it's not maintained anymore, but you can always go check it -> https://github.com/IMB11/Spoticraft/tree/master (fabric only)
+Spotify Premium is required.
 
-## Table of Content
-[Description](#description)\
-[TODO List](#todo-list)\
-[FAQ](#faq)\
-[Version List](#version-list)\
-[API](#api)\
-[How to build the mod](#how-to-build-the-mod)\
-[Changelog](#changelog)
+## Credits
 
-## Description
-SpotiCraft allow you to connect into your Spotify account and play your favorite music, playlist, artist or even search for new song all in Minecraft :3 (Spotify **Premium** is **required** to use this mod!)
+This project is based on the discontinued original SpotiCraft project by LeonimusTTV:
 
-## TODO List
-- Login - Finished
-- Play music (play, pause, next, previous, shuffle, repeat, volume) - Finished
-- Search for music, artist or playlist - Finished
-- Artist page (show music of artist, playable music) - Finished
-- Album and Playlist - Finished
-- Home page (recommendation and featured category can't be used now due to spotify removing api endpoint)  - Finished
-- Go back, forward and home button - Finished
-- Like music and unlike it - Finished
-- Add and remove from playlist - Finished
-- UI in general - Finished
-- Improvement - WIP
+- Original project: https://github.com/LeonimusTTV/SpotiCraft
 
-## FAQ
+This version updates the mod for modern Fabric/Minecraft, replaces the abandoned auth setup with user-owned Spotify app configuration, and continues development from there.
 
-### Minecraft keep crashing after updating the mod
+## Requirements
 
-If that happen to you, before making an issue, try to delete the "spoticraft" folder in the Minecraft folder (where the mods folder is)\
-If Minecraft keep crashing, try to only have this mod in your mods' folder\
-If Minecraft still crash, make an issue and don't forget your log file
+- Minecraft `1.21.10`
+- Fabric Loader
+- Fabric API
+- Java `21`
+- Spotify Premium
+- Your own Spotify developer app/client ID
 
-## Version List
-For now, I'll support Forge + NeoForge from 1.21.4 (and upcoming versions if not a lot of the code need to be changed) to 1.19.
-I'm also testng Fabric support, please create an issue.
+## Install
 
-| Minecraft version | Mod version                 | Mod Loader                | Link                                                                                                                                   |
-|-------------------|-----------------------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| 1.21.5            | 0.0.1-release               | Forge + NeoForge + Fabric | [Main](https://github.com/LeonimusTTV/SpotiCraft/tree/master) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.5-fabric)   |
-| 1.21.4            | 0.0.1-release               | Forge + NeoForge + Fabric | [1.21.4](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.4) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.4-fabric) |
-| 1.21.3            | 0.0.1-release               | Forge + NeoForge + Fabric | [1.21.3](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.3) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.3-fabric) |
-| 1.21.2            | 0.0.1-release               | NeoForge + Fabric         | [1.21.2](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.2) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.2-fabric) |
-| 1.21.1            | 0.0.1-release               | Forge + NeoForge + Fabric | [1.21.1](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.1) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21.1-fabric) |
-| 1.21              | 0.0.1-release               | Forge + NeoForge + Fabric | [1.21](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.21-fabric)       |
-| 1.20.6            | 0.0.1-release               | Forge + NeoForge + Fabric | [1.20.6](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.6) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.6-fabric) |
-| 1.20.5            | 0.0.1-release               | NeoForge + Fabric         | [1.20.5](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.5) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.5-fabric) |
-| 1.20.4            | 0.0.1-release               | Forge + NeoForge + Fabric | [1.20.4](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.4) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.4-fabric) |
-| 1.20.3            | 0.0.1-release               | Forge + NeoForge + Fabric | [1.20.3](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.3) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.3-fabric) |
-| 1.20.2            | 0.0.1-release               | Forge + NeoForge + Fabric | [1.20.2](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.2) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.2-fabric) |
-| 1.20.1            | 0.0.1-release               | Forge + Fabric            | [1.20.1](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.1) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20.1-fabric) |
-| 1.20              | 0.0.1-release               | Forge + Fabric            | [1.20](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20) [Fabric](https://github.com/LeonimusTTV/SpotiCraft/tree/1.20-fabric)       |
-| 1.19.4 to 1.19    | -                           | Forge + Fabric            | -                                                                                                                                      |
-| before 1.19       | Not planned to be supported | -                         | -                                                                                                                                      |
+1. Put the mod jar into your Fabric `mods` folder.
+2. Make sure Fabric API is installed.
+3. Launch Minecraft once.
 
-## API
-### The API will no longer be used after 0.0.5-beta due to Spotify new security policies
-[SpotifyAuthHandler.java](https://github.com/LeonimusTTV/SpotiCraft/blob/master/src/main/java/com/leonimust/spoticraft/server/SpotifyAuthHandler.java#L31) use an API to get the access_token and refresh it, if you want to use yours you can get the [repo here](https://github.com/LeonimusTTV/SpotiCraft-API) if you want an example.
+## Spotify App Setup
 
-## How to build the mod
-This guide uses [git](https://git-scm.com/downloads), [IntelliJ from JetBrains](https://www.jetbrains.com/idea/) and the [JAVA JDK from Adoptium](https://adoptium.net/temurin/releases/)
+The original embedded Spotify app is not reliable for public use, so this build uses your own Spotify developer app.
 
-### Installation Part
-1. Download the repo using the "Code" button (keep in mind the folder where you're download spoticraft)\
-   **IMPORTANT NOTE**:\
-   If you wanna use a specific version, please choose the right branch for that :\
-   ![image](https://github.com/user-attachments/assets/04678ada-9157-4282-aead-c1fb14e8d69e)\
-   **FABRIC MOD ARE ONLY IN minecraftversion-fabric**\
-   Please also refere to the [Version List](#version-list) to know what branch is on what version
+1. Go to the Spotify Developer Dashboard and create an app.
+2. Enable `Web API`.
+3. Add this exact redirect URI:
 
-2. Install [JAVA 21](https://adoptium.net/temurin/releases/) JDK or [JAVA 17](https://adoptium.net/temurin/releases/?version=17) JDK for minecraft 1.20.x (don't forget to check the "Set or override JAVA_HOME variable")\
-   ![image](https://github.com/user-attachments/assets/89a67534-6528-4234-9ca4-fc2cef225d4d)
-
-3. Install [IntelliJ](https://www.jetbrains.com/idea/)
-
-4. Open IntelliJ and open spoticraft's folder
-
-5. Select the right JAVA SDK in the project settings\
-   ![image](https://github.com/user-attachments/assets/5051befd-70e9-442a-8557-c832593287b0)\
-   ![image](https://github.com/user-attachments/assets/c66ef941-a28d-4843-a2e5-f9cd2b1678e7)
-
-6. Now select again the right JAVA SDK in the settings\
-   ![image](https://github.com/user-attachments/assets/1a531a9c-68c0-406b-bbf6-b9fdd975d39c)\
-   ![image](https://github.com/user-attachments/assets/9a776c3a-0d8a-4317-824a-3afce18656c5)\
-   Do **NOT** forget to check the "Download external annotations for dependencies", it might help for some errors
-
-7. Wait for gradle to finish the installation (lil hammer with a green dot)\
-   ![image](https://github.com/user-attachments/assets/44418508-aef7-40d7-9fb2-a802314927bb)
-
-8. If you see "BUILD SUCCESSFUL", everything should be good
-   ![image](https://github.com/user-attachments/assets/873ce4de-65e3-464f-ab71-d4a82a3984be)
-
-9. If you don't have a BUILD SUCCESSFUL you might have done something wrong, check again this guide and if it still doesn't work, make an issue
-
-### Spotify Part
-1. Go to this url https://developer.spotify.com/ and log yourself
-
-2. Open the dashboard\
-   ![image](https://github.com/user-attachments/assets/01589896-f3b0-43ac-8ab1-e3e856f2d0f2)
-
-3. Click the "Create app" button
-
-4. Enter the name of the app, a description
-
-5. You **MUST** add this EXACT url in your spotify app **http://127.0.0.1:12589/callback** (don't forget to press the "add" button)
-
-6. Check WEB API
-
-7. Check the terms
-   ![image](https://github.com/user-attachments/assets/99547639-1e53-4b4a-a30f-41a90b65cf9f)
-
-9. Create the app
-
-10. Now go to your application and click "Settings"
-
-11. Copy the client ID\
-    ![image](https://github.com/user-attachments/assets/704ca60f-2698-4575-9830-7eed75ba432c)
-
-12. Now open the file called SpotifyAuthHandler.java\
-    **Forge Path**: src/main/java/com/leonimust/spoticraft/forge/server/SpotifyAuthHandler.java\
-    **NeoForge Path**: src/main/java/com/leonimust/spoticraft/neoforge/server/SpotifyAuthHandler.java\
-    **Fabric Path**: src/main/java/com/leonimust/server/SpotifyAuthHandler.java\
-    ![image](https://github.com/user-attachments/assets/dd13cb2f-bc78-450a-9b97-857226913a30)
-
-14. Then on the line where it says "CLIENT_ID" replace it by your client ID\
-    ![image](https://github.com/user-attachments/assets/a98ff868-a17a-46b4-b321-cd75005dac30)
-
-### Build Time
-1. Now time to build\
-   **Forge**: for Forge, open the gradle menu at the right of your screen, go into jarJar and double click on "jarJar"\
-   ![image](https://github.com/user-attachments/assets/a8948dc9-8790-4ff0-a705-95d7621a601b)
-
-**NeoForge**: for NeoForge you'll need to enter a command to build the mod (if you're using a version that only has NeoForge like 1.21.2, do the same as Forge)
-
-**Windows**:
-```bash
-.\gradlew --build-file=build-neoforge.gradle jarJar
+```text
+http://127.0.0.1:12589/callback
 ```
 
-**Linux/MacOs**:
-```bash
-./gradlew --build-file=build-neoforge.gradle jarJar
+4. Launch Minecraft and press `P` once.
+5. SpotiCraft will create this config file inside your Minecraft instance:
+
+```text
+<instance folder>/spoticraft/spotify_app.json
 ```
 
-**Fabric**: for Fabric, open the gradle menu at the right of your screen, go into build and double click on "build"\
-![image](https://github.com/user-attachments/assets/3e61e2bb-a5af-4a01-a90f-1473415f8ddd)
+6. Put your Spotify `client_id` into that file.
 
-2. Now open the "build" folder then "libs"
+Example:
 
-**Forge**: the only file you see (the one that ends with -all.jar) is the mod, put it into your mods folder
+```json
+{
+  "client_id": "YOUR_SPOTIFY_CLIENT_ID",
+  "redirect_uri": "http://127.0.0.1:12589/callback",
+  "notes": "Create your own Spotify app and paste its client_id here. In the Spotify dashboard, add the same redirect_uri exactly."
+}
+```
 
-**NeoForge**: you'll have two files, one with "-all.jar" at the end and one without, use the one that has "-all.jar", put it into your mods folder
+7. If you previously authenticated with a different app, delete:
 
-**Fabric**: you'll also have two files, one that ends with "-sources.jar" and one without, take the one that doens't end with "-sources.jar", take it and put it into your mods folder, don't forget the Fabric API !\
-![image](https://github.com/user-attachments/assets/2be30c2d-fda7-4d3f-92ba-36812867880d)
+```text
+<instance folder>/spoticraft/spotify_tokens.json
+```
 
-## Changelog
-Release 0.0.1
-- Fixed refresh token not being updated after being used to refresh the access token
-- Fixed resize text in the ui, now using text width and not text length
-- Added repeat one and repeat enable icons to the ui
-- Added shuffle enable icons to the ui
+8. Press `P` again and complete Spotify login in your browser.
 
-Beta 0.0.7
-- Fixed Like Button position
-- Fixed bugs
+## Controls
 
-Beta 0.0.6
-- Updated auth system because of Spotify new security policies
-- Other fixes
+- `P`: Open SpotiCraft
+- `O`: Open the HUD editor
 
-Beta 0.0.5
-- Added Turk and French
-- Fixed pixel bleeding on 1.20.1
-- Fixed crash when searching for an artist, playlist or album without an image
+You can also rebind both keys in Minecraft Controls under `SpotiCraft`.
 
-Beta 0.0.4
-- Fixed crash when image isn't downloaded successfully
-- Fixed crash when user doesn't have an active device
-- Fixed UI not refreshing correctly when closing
+## How To Use
 
-Beta 0.0.3
-- Added NeoForge support for 1.21.4
-- Fixed crash when searching (doesn't occur all the time, but sometimes it does)
+- Open the main UI with `P`
+- Use the search bar at the top to search Spotify
+- Click playlists, albums, artists, or tracks to browse and play them
+- Use the playback buttons at the bottom for transport controls
+- Choose a target playlist at the top-left, then use `Add Track` or `Remove Track`
+- Press `O` to drag the always-on HUD strip wherever you want
 
-Beta 0.0.2
-- Fixed crash when searching from the last version
-- Added home button
-- Added a home page (somewhat)
-- Added go forward button
-- Added play button in playlist
-- Removed the text of Play button in albums and playlist, same for Liked Songs
-- Fixed scroll not being reset when content change
-- Made some general improvement
+## Notes
 
-Beta 0.0.1 - Removed due to crash when searching
-- Made ui smaller
-- Added Search with artist, songs, playlist and albums
-- Added Artist page with top songs and albums
-- Added Playlist page with playable music
-- Added Albums, same as playlist
-- Added music name and artist(s)
-- Added Liked songs, same as playlist and albums
-- Added back button
-- Added a play button in albums (will be reworked on future version)
+- Playback is controlled through Spotify Connect, so Spotify still handles the actual audio output.
+- The HUD updates in the background and should not require reopening the main GUI to refresh.
+- Some Spotify content can still be limited by account/device/API behavior.
 
-Alpha 0.0.2
-- Fixed crashes
-- Bump forge version to 1.21.4-54.0.16
+## Build
 
-Alpha 0.0.1 - Removed due to issues
-- User can log in with their Spotify account
-- Base version of the UI to play music, pause music, go to the next music, go to the previous music, shuffle, repeat, change volume of the music and show the Image of the music currently playing
+```bash
+./gradlew build
+```
+
+Built jars are placed in:
+
+```text
+build/libs/
+```
