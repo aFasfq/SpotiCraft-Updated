@@ -1,172 +1,104 @@
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.178'
-    id 'net.darkhax.curseforgegradle' version '1.1.26'
+	id 'fabric-loom' version '1.11-SNAPSHOT'
+	id 'maven-publish'
+	id 'net.darkhax.curseforgegradle' version '1.1.26'
 }
 
-tasks.named('wrapper', Wrapper).configure {
-    distributionType = Wrapper.DistributionType.BIN
-}
-
-version = mod_version + "-neoforge"
-group = mod_group_id
-
-repositories {
-    mavenLocal()
-}
+version = project.mod_version
 
 base {
-    archivesName = mod_id
-}
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-runs {
-    configureEach {
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-        systemProperty 'forge.logging.console.level', 'debug'
-
-        modSource project.sourceSets.main
-
-        dependencies {
-            runtime 'org.nanohttpd:nanohttpd:2.3.1'
-            runtime 'org.json:json:20231013'
-            runtime 'se.michaelthelin.spotify:spotify-web-api-java:9.1.0'
-        }
-    }
-
-    client {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-    }
-
-    server {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        argument '--nogui'
-    }
-    gameTestServer {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-    }
-
-    clientData {
-        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            exclude 'com/leonimust/spoticraft/forge/**'
-        }
-
-        resources {
-            exclude 'META-INF/mods.toml'
-        }
-    }
-}
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
+	archivesName = project.mod_id
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neo_version}"
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation 'org.json:json:20231013'
-    implementation 'se.michaelthelin.spotify:spotify-web-api-java:9.1.0'
+	include(modImplementation('org.json:json:20231013'))
+	include(modImplementation('se.michaelthelin.spotify:spotify-web-api-java:9.1.0'))
 
-    // TODO change ranged since it's deprecated
-    jarJar('org.apache.httpcomponents.core5:httpcore5:5.3.1') {
-        jarJar.ranged(it, "[5.3,5.4)")
-    }
+	include('org.apache.httpcomponents.core5:httpcore5:5.3.1')
+	include('org.apache.httpcomponents.client5:httpclient5:5.4.1')
+	include('org.apache.httpcomponents.client5:httpclient5-cache:5.4.1')
+	include('org.apache.httpcomponents.core5:httpcore5-h2:5.3.1')
+	include('com.neovisionaries:nv-i18n:1.28')
 
-    jarJar('org.json:json:20231013') {
-        jarJar.ranged(it, "[20231013,20231015)")
-    }
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    jarJar('org.nanohttpd:nanohttpd:2.3.1') {
-        jarJar.ranged(it, "[2.3,2.4)")
-    }
-
-    jarJar('se.michaelthelin.spotify:spotify-web-api-java:9.1.0') {
-        jarJar.ranged(it, '[9.1,9.2)')
-    }
-
-    // I need copium
-    jarJar('org.apache.httpcomponents.client5:httpclient5:5.4.1') {
-        jarJar.ranged(it, "[5.4,5.5)")
-    }
-
-    jarJar('org.apache.httpcomponents.client5:httpclient5-cache:5.4.1') {
-        jarJar.ranged(it, "[5.4,5.5)")
-    }
-
-    jarJar('org.apache.httpcomponents.core5:httpcore5-h2:5.3.1') {
-        jarJar.ranged(it, "[5.3,5.4)")
-    }
-
-    jarJar('com.neovisionaries:nv-i18n:1.28') {
-        jarJar.ranged(it, "[1.28,1.29)")
-    }
 }
 
-tasks.withType(ProcessResources).configureEach {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
-            neo_version_range      : neo_version_range,
-            loader_version_range   : neo_loader_version_range,
-            mod_id                 : mod_id,
-            mod_name               : mod_name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            mod_authors            : mod_authors,
-            mod_description        : mod_description
-    ]
-    inputs.properties replaceProperties
-
-    filesMatching(['META-INF/neoforge.mods.toml']) {
-        expand replaceProperties
-    }
+remapJar {
+	addNestedDependencies = true // Keep Fabric API dependencies
 }
 
-jarJar.enable()
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": inputs.properties.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+tasks.register('publishAll') {
+	group = 'publishing'
+	description = 'Publish to Modrinth and CurseForge'
+
+	doLast {
+		//really can't find a way to not use exec
+		exec {
+			commandLine './gradlew', 'uploadToModrinth'
+		}
+
+		exec {
+			commandLine './gradlew', 'uploadToCurseForge'
+		}
+	}
+}
 
 tasks.register('uploadToModrinth', Exec) {
-    group = 'publishing'
-    description = 'Uploads the jar to Modrinth using the API'
+	group = 'publishing'
+	description = 'Uploads the jar to Modrinth using the API'
 
-    // Ensure the jarJar task has already run
-    dependsOn 'jarJar'
+	// Ensure the build task has already run
+	dependsOn 'build'
 
-    // Get the jar file produced by the jarJar task
-    def jarFile = tasks.named('jarJar').get().archiveFile.get().asFile
+	def pattern = /(\d+\.\d+\.\d+)-(\d+\.\d+\.\d+)-(\w+)(?:-(\w+))?/
+	def matcher = version =~ pattern
 
-    def pattern = /(\d+\.\d+\.\d+)-(\d+\.\d+\.\d+)-(\w+)(?:-(\w+))?/
-    def matcher = version =~ pattern
+	if (!matcher.find()) {
+		println("nope")
+		return
+	}
 
-    if (!matcher.find()) {
-        println("nope")
-        return
-    }
+	def mcVersion = matcher.group(1)  // e.g. "1.21.4"
+	def modVersion = matcher.group(2) // e.g. "0.0.1"
+	def releaseType = matcher.group(3) // e.g. "release"
+	def extra = matcher.group(4) ?: "" // If group(4) is null, use an empty string
 
-    def mcVersion = matcher.group(1)  // e.g. "1.21.4"
-    def modVersion = matcher.group(2) // e.g. "0.0.1"
-    def releaseType = matcher.group(3) // e.g. "release"
-    def extra = matcher.group(4) ?: "" // If group(4) is null, use an empty string
+	def formattedVersion = "[${mcVersion}] SpotiCraft ${modVersion} ${releaseType.capitalize()} ${extra ? extra.capitalize() : ''}".trim()
 
-    def formattedVersion = "[${mcVersion}] SpotiCraft ${modVersion} ${releaseType.capitalize()} ${extra ? extra.capitalize() : ''}".trim()
-
-    // JSON metadata – adjust the values as needed
-    def jsonData = """{
+	// JSON metadata – adjust the values as needed
+	def jsonData = """{
       "name": "${formattedVersion}",
       "version_number": "${version}",
       "version_type": "${releaseType}",
       "game_versions": ["${minecraft_version}"],
       "loaders": ["${extra == "" ? "forge" : extra}"],
-      "dependencies": [],
+      "dependencies": [
+      	{
+      		"dependency_type" : "required",
+      		"project_id" : "P7dR8mSH"
+      	}
+	  ],
       "featured": true,
       "status": "listed",
       "project_id": "${modrinthProjectId}",
@@ -174,54 +106,59 @@ tasks.register('uploadToModrinth', Exec) {
       "primary_file": "file"
     }"""
 
-    // Use curl to POST a multipart/form-data request to Modrinth API
-    commandLine "curl",
-            "-X", "POST",
-            "https://api.modrinth.com/v2/version",
-            "-H", "Authorization: ${System.getenv('MODRINTH_TOKEN')}",
-            "-F", "data=${jsonData};type=application/json",
-            "-F", "file=@${jarFile.absolutePath}"
+	// Use curl to POST a multipart/form-data request to Modrinth API
+	commandLine "curl",
+			"-X", "POST",
+			"https://api.modrinth.com/v2/version",
+			"-H", "Authorization: ${System.getenv('MODRINTH_TOKEN')}",
+			"-F", "data=${jsonData};type=application/json",
+			"-F", "file=@${file("${buildDir}/libs/spoticraft-${mod_version}.jar")}"
 }
 
 tasks.register('uploadToCurseForge', TaskPublishCurseForge) {
-    group = 'publishing'
-    // Get the jar file produced by the jarJar task
-    def jarFile = tasks.named('jarJar').get().archiveFile.get().asFile
+	group = 'publishing'
 
-    def pattern = /(\d+\.\d+\.\d+)-(\d+\.\d+\.\d+)-(\w+)(?:-(\w+))?/
-    def matcher = version =~ pattern
+	def pattern = /(\d+\.\d+\.\d+)-(\d+\.\d+\.\d+)-(\w+)(?:-(\w+))?/
+	def matcher = version =~ pattern
 
-    if (!matcher.find()) {
-        println("nope")
-        return
-    }
+	if (!matcher.find()) {
+		println("nope")
+		return
+	}
 
-    def mcVersion = matcher.group(1)  // e.g. "1.21.4"
-    def modVersion = matcher.group(2) // e.g. "0.0.1"
-    def releaseType = matcher.group(3) // e.g. "release"
-    def extra = matcher.group(4) ?: "" // If group(4) is null, use an empty string
+	def mcVersion = matcher.group(1)  // e.g. "1.21.4"
+	def modVersion = matcher.group(2) // e.g. "0.0.1"
+	def releaseType = matcher.group(3) // e.g. "release"
+	def extra = matcher.group(4) ?: "" // If group(4) is null, use an empty string
 
-    def formattedVersion = "[${mcVersion}] SpotiCraft ${modVersion} ${releaseType.capitalize()} ${extra ? extra.capitalize() : ''}".trim()
+	def formattedVersion = "[${mcVersion}] SpotiCraft ${modVersion} ${releaseType.capitalize()} ${extra ? extra.capitalize() : ''}".trim()
 
-    apiToken = System.getenv("CURSEFORGE_TOKEN")
+	apiToken = System.getenv("CURSEFORGE_TOKEN")
 
-    def mainFile = upload(curseforgeProjectId, jarFile)
+	def mainFile = upload(curseforgeProjectId, file("${buildDir}/libs/spoticraft-${mod_version}.jar"))
 
-    mainFile.releaseType = releaseType
-    mainFile.changelog = ''
-    mainFile.addGameVersion(mcVersion)
-    mainFile.addModLoader(extra == "" ? "forge" : extra)
-    mainFile.displayName = formattedVersion
+	mainFile.releaseType = releaseType
+	mainFile.changelog = ''
+	mainFile.addGameVersion(mcVersion)
+	mainFile.addModLoader(extra == "" ? "forge" : extra)
+	mainFile.displayName = formattedVersion
+	mainFile.addRequirement("fabric-api")
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
-// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
+jar {
+	inputs.property "archivesName", project.base.archivesName
+
+	from("LICENSE") {
+		rename { "${it}_${inputs.properties.archivesName}"}
+	}
 }
